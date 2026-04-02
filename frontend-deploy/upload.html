@@ -80,7 +80,7 @@ document.getElementById("uploadForm").addEventListener("submit", function(e) {
         localStorage.setItem("file_name", data.file_name);
         localStorage.setItem("headers", JSON.stringify(data.headers));
 
-        window.location.href = "/mapping/";
+        window.location.href = "mapping.html";
     })
     .catch(err => {
         document.getElementById("error").innerText = "Upload failed!";
