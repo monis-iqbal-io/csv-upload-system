@@ -1,0 +1,15 @@
+# python
+venv/
+__pycache__/
+*.pyc
+
+# environment variables
+.env
+
+# os files
+.DS_Store
+
+# logs
+logs/
+
+backend/uploads/

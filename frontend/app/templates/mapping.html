@@ -1,0 +1,150 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Header Mapping</title>
+
+    
+    <link rel="stylesheet" href="{% static 'css/mapping.css' %}">
+</head>
+<body>
+
+<div class="container">
+
+<h2>Map CSV Headers</h2>
+
+<form id="mappingForm">
+
+    <table>
+        <thead>
+            <tr>
+                <th>CSV Header</th>
+                <th>Map To Field</th>
+            </tr>
+        </thead>
+        <tbody id="mapping-body"></tbody>
+    </table>
+
+</form>
+
+<p id="error"></p>
+
+<button onclick="submitMapping()">Submit Mapping</button>
+
+</div>
+
+<script>
+
+// DATA
+let headers = JSON.parse(localStorage.getItem("headers"));
+let dbFields = ["name", "mobile", "email", "city", "date"];
+
+const tbody = document.getElementById("mapping-body");
+
+
+// RENDER ROWS
+headers.forEach(header => {
+
+    const row = document.createElement("tr");
+
+    let options = "<option value=''>-- Select --</option>";
+
+    dbFields.forEach(field => {
+        options += `<option value="${field}">${field}</option>`;
+    });
+
+    row.innerHTML = `
+        <td>${header}</td>
+        <td>
+            <select name="${header}">
+                ${options}
+            </select>
+        </td>
+    `;
+
+    tbody.appendChild(row);
+});
+
+
+// SUBMIT
+function submitMapping() {
+
+    let mapping = {};
+    let selects = document.querySelectorAll("select");
+
+    let selectedValues = [];
+    let hasMobile = false;
+
+    for (let select of selects) {
+
+        if (!select.value) {
+            document.getElementById("error").innerText = "All fields must be mapped!";
+            return;
+        }
+
+        if (selectedValues.includes(select.value)) {
+            document.getElementById("error").innerText = "Duplicate mapping not allowed!";
+            return;
+        }
+        
+        let header = select.name.toLowerCase();
+        let value = select.value;
+
+        //STRICT MOBILE VALIDATION
+        if (value === "mobile") {
+
+        if (!(header.includes("mobile") || header.includes("phone") || header.includes("contact"))) {
+        document.getElementById("error").innerText =
+            "Mobile must be mapped from a mobile/phone/contact column!";
+        return;
+            }
+        }
+
+        //CHECK MOBILE
+        if (select.value === "mobile") {
+            hasMobile = true;
+        }
+
+        selectedValues.push(select.value);
+        mapping[select.name] = select.value;
+    }
+
+    
+    if (!hasMobile) {
+        document.getElementById("error").innerText = "Mobile field is required!";
+        return;
+    }
+
+    fetch("http://127.0.0.1:5000/map-headers", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            file_name: localStorage.getItem("file_name"),
+            mapping: mapping
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.error) {
+            document.getElementById("error").innerText = data.error;
+            return;
+        }
+
+        //SAVE MAPPING 
+        localStorage.setItem("mapping", JSON.stringify(mapping));
+
+        window.location.href = "/progress/";
+    })
+    .catch(err => {
+        console.error(err);
+        document.getElementById("error").innerText = "Mapping failed!";
+    });
+}
+
+</script>
+
+</body>
+</html>
