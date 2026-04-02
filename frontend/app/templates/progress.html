@@ -36,10 +36,13 @@
 
 </div>
 <script>
+
+const BASE_URL = "https://csv-upload-backend-lzun.onrender.com";
+
 let file_name = localStorage.getItem("file_name");
 
 
-fetch("http://127.0.0.1:5000/start-upload", {
+fetch(`${BASE_URL}/start-upload`, {
     method: "POST",
     headers: {
         "Content-Type": "application/json"

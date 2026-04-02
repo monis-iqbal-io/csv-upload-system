@@ -55,6 +55,7 @@
 </div>
 
 <script>
+const BASE_URL = "https://csv-upload-backend-lzun.onrender.com";
 
 // STATE
 let currentPage = 1;
@@ -76,7 +77,7 @@ function loadData(page) {
 
     let fileName = localStorage.getItem("file_name");
 
-    fetch(`http://127.0.0.1:5000/data?page=${page}&limit=${limit}&file_name=${fileName}&from_date=${fromDate}&to_date=${toDate}`)
+    fetch(`${BASE_URL}/data?page=${page}&limit=${limit}&file_name=${fileName}&from_date=${fromDate}&to_date=${toDate}`)
     .then(res => res.json())
     .then(data => {
 

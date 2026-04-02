@@ -37,7 +37,7 @@
 </div>
 
 <script>
-
+const BASE_URL = "https://csv-upload-backend-lzun.onrender.com";
 //OPEN FILE PICKER
 function openFilePicker() {
     document.getElementById("fileInput").click();
@@ -65,7 +65,7 @@ document.getElementById("uploadForm").addEventListener("submit", function(e) {
     let formData = new FormData();
     formData.append("file", file);
 
-    fetch("http://127.0.0.1:5000/upload-csv", {
+    fetch(`${BASE_URL}/upload-csv`, {
         method: "POST",
         body: formData
     })

@@ -34,6 +34,7 @@
 </div>
 
 <script>
+const BASE_URL = "https://csv-upload-backend-lzun.onrender.com";
 
 // DATA
 let headers = JSON.parse(localStorage.getItem("headers"));
@@ -115,7 +116,7 @@ function submitMapping() {
         return;
     }
 
-    fetch("http://127.0.0.1:5000/map-headers", {
+    fetch(`${BASE_URL}/map-headers`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
