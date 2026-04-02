@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users Data</title>
+
+    <link rel="stylesheet" href="css/data.css"}">
+</head>
+<body>
+
+<div class="container">
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+    <h2>Users Data</h2>
+    <button onclick="goToHistory()">View Upload History</button>
+</div>
+
+<!-- FILTERS -->
+<div class="filters">
+
+    <label>From:</label>
+    <input type="date" id="fromDate">
+
+    <label>To:</label>
+    <input type="date" id="toDate">
+
+    <button onclick="applyFilter()">Apply</button>
+
+</div>
+
+
+<!-- TABLE -->
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>City</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+</table>
+
+<!-- PAGINATION -->
+<div class="pagination">
+    <button id="prevBtn">Previous</button>
+    <span id="pageNumbers"></span>
+    <button id="nextBtn">Next</button>
+</div>
+
+</div>
+
+<script>
+const BASE_URL = "https://csv-upload-backend-lzun.onrender.com";
+
+// STATE
+let currentPage = 1;
+const limit = 10;
+let totalPages = 1;
+
+let fromDate = "";
+let toDate = "";
+
+// DOM
+const tableBody = document.getElementById("table-body");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const pageNumbers = document.getElementById("pageNumbers");
+
+
+// MAIN FUNCTION
+function loadData(page) {
+
+    let fileName = localStorage.getItem("file_name");
+
+    fetch(`${BASE_URL}/data?page=${page}&limit=${limit}&file_name=${fileName}&from_date=${fromDate}&to_date=${toDate}`)
+    .then(res => res.json())
+    .then(data => {
+
+        currentPage = data.page;
+        totalPages = data.total_pages;
+
+        tableBody.innerHTML = "";
+
+        if (data.data.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='5'>No Data</td></tr>";
+            return;
+        }
+
+        data.data.forEach(user => {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${user.name || "-"}</td>
+                <td>${user.mobile || "-"}</td>
+                <td>${user.email || "-"}</td>
+                <td>${user.city || "-"}</td>
+                <td>${user.date || "-"}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
+        renderPageNumbers();
+
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+    });
+}
+
+
+// FILTER
+function applyFilter() {
+    fromDate = document.getElementById("fromDate").value;
+    toDate = document.getElementById("toDate").value;
+
+    currentPage = 1;
+    loadData(currentPage);
+}
+
+
+// PAGINATION
+function renderPageNumbers() {
+
+    pageNumbers.innerHTML = "";
+    const maxVisible = 5;
+
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+
+    if (end - start < maxVisible - 1) {
+        start = Math.max(1, end - maxVisible + 1);
+    }
+
+    if (start > 1) {
+        addPageButton(1);
+        if (start > 2) addDots();
+    }
+
+    for (let i = start; i <= end; i++) {
+        addPageButton(i);
+    }
+
+    if (end < totalPages) {
+        if (end < totalPages - 1) addDots();
+        addPageButton(totalPages);
+    }
+}
+
+function addPageButton(page) {
+    const btn = document.createElement("button");
+    btn.textContent = page;
+
+    if (page === currentPage) {
+    btn.classList.add("active");
+    }
+
+    btn.addEventListener("click", () => {
+        currentPage = page;
+        loadData(currentPage);
+    });
+
+    pageNumbers.appendChild(btn);
+}
+
+function addDots() {
+    const span = document.createElement("span");
+    span.textContent = " ... ";
+    pageNumbers.appendChild(span);
+}
+
+
+// NAVIGATION
+prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+        currentPage--;
+        loadData(currentPage);
+    }
+});
+
+nextBtn.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+        currentPage++;
+        loadData(currentPage);
+    }
+});
+
+function goToHistory() {
+    window.location.href = "/history/";
+}
+
+// INITIAL LOAD
+loadData(currentPage);
+
+</script>
+
+</body>
+</html>

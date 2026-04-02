@@ -1,0 +1,98 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #f1f5f9;
+}
+
+.container {
+    width: 90%;
+    margin: 40px auto;
+}
+
+h2 {
+    color: #1e3a8a;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+th {
+    background: #2563eb;
+    color: white;
+    padding: 12px;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* STATUS BADGE */
+.status {
+    padding: 5px 10px;
+    border-radius: 12px;
+    color: white;
+    font-size: 13px;
+}
+
+.status.completed {
+    background: #16a34a;
+}
+
+.status.processing {
+    background: #f59e0b;
+}
+
+/* PAGINATION */
+.pagination {
+    text-align: center;
+    margin-top: 20px;
+}
+/* BACK BUTTON */
+.back-btn {
+    display: inline-block;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 25px;
+    gap: 6px;
+}
+
+.pagination button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #e5e7eb;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.pagination button:hover {
+    background: #2563eb;
+    color: white;
+}
+
+.pagination .active {
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+}

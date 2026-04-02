@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload History</title>
+
+    <link rel="stylesheet" href="css/history.css">
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+    <h2>Upload History</h2>
+
+    
+    <a href="/data/" class="back-btn">← Back to Data</a>
+</div>
+
+<!-- TABLE -->
+<table>
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Total Rows</th>
+            <th>Inserted</th>
+            <th>Updated</th>
+            <th>Status</th>
+            <th>Upload Date</th>
+        </tr>
+    </thead>
+    <tbody id="history-body"></tbody>
+</table>
+
+<!-- PAGINATION -->
+<div class="pagination">
+    <button id="prevBtn">Previous</button>
+    <span id="pageNumbers"></span>
+    <button id="nextBtn">Next</button>
+</div>
+
+</div>
+
+<script>
+
+const BASE_URL = "https://csv-upload-backend-lzun.onrender.com";
+// STATE
+let currentPage = 1;
+const limit = 10;
+let totalPages = 1;
+
+// DOM
+const tableBody = document.getElementById("history-body");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const pageNumbers = document.getElementById("pageNumbers");
+
+
+// MAIN FUNCTION
+function loadHistory(page) {
+
+    fetch(`${BASE_URL}/upload-history?page=${page}&limit=${limit}`)
+    .then(res => res.json())
+    .then(data => {
+
+        currentPage = data.page;
+        totalPages = data.total_pages;
+
+        tableBody.innerHTML = "";
+
+        if (data.data.length === 0) {
+            tableBody.innerHTML = "<tr><td colspan='6'>No History</td></tr>";
+            return;
+        }
+
+        data.data.forEach(item => {
+
+            const row = document.createElement("tr");
+
+            // STATUS CLASS
+            let statusClass = item.status.toLowerCase();
+
+            row.innerHTML = `
+                <td>${item.file_name}</td>
+                <td>${item.total_rows}</td>
+                <td>${item.inserted}</td>
+                <td>${item.updated}</td>
+                <td>
+                    <span class="status ${statusClass}">
+                        ${item.status}
+                    </span>
+                </td>
+                <td>${item.upload_date}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+
+        renderPageNumbers();
+
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+    });
+}
+
+
+// PAGINATION
+function renderPageNumbers() {
+
+    pageNumbers.innerHTML = "";
+    const maxVisible = 5;
+
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+
+    if (end - start < maxVisible - 1) {
+        start = Math.max(1, end - maxVisible + 1);
+    }
+
+    if (start > 1) {
+        addPageButton(1);
+        if (start > 2) addDots();
+    }
+
+    for (let i = start; i <= end; i++) {
+        addPageButton(i);
+    }
+
+    if (end < totalPages) {
+        if (end < totalPages - 1) addDots();
+        addPageButton(totalPages);
+    }
+}
+
+function addPageButton(page) {
+    const btn = document.createElement("button");
+    btn.textContent = page;
+
+    if (page === currentPage) {
+    btn.classList.add("active");
+    }
+
+    btn.addEventListener("click", () => {
+        currentPage = page;
+        loadHistory(currentPage);
+    });
+
+    pageNumbers.appendChild(btn);
+}
+
+function addDots() {
+    const span = document.createElement("span");
+    span.textContent = " ... ";
+    pageNumbers.appendChild(span);
+}
+
+
+// NAVIGATION
+prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+        currentPage--;
+        loadHistory(currentPage);
+    }
+});
+
+nextBtn.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+        currentPage++;
+        loadHistory(currentPage);
+    }
+});
+
+function goBack() {
+    window.location.href = "/data/";
+}
+
+
+loadHistory(currentPage);
+
+</script>
+
+</body>
+</html>

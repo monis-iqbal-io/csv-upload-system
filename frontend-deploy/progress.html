@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Processing Upload</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/progress.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Processing File...</h2>
+
+    <!-- STATUS -->
+    <p class="status">
+        Status: <span id="status">Starting...</span>
+    </p>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+    </div>
+
+    <!-- PERCENT -->
+    <p class="progress-text">
+        <span id="progressText">0%</span>
+    </p>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div>Inserted: <span id="inserted">0</span></div>
+        <div>Updated: <span id="updated">0</span></div>
+    </div>
+
+</div>
+<script>
+
+const BASE_URL = "https://csv-upload-backend-lzun.onrender.com";
+
+let file_name = localStorage.getItem("file_name");
+
+
+fetch(`${BASE_URL}/start-upload`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        file_name: file_name,
+        mapping: JSON.parse(localStorage.getItem("mapping"))
+    })
+}).catch(err => console.error(err));
+
+
+checkStatus();
+
+
+
+function checkStatus() {
+
+    fetch(`http://127.0.0.1:5000/upload-status?file_name=${file_name}`)
+    .then(res => res.json())
+    .then(data => {
+
+        console.log("API:", data);
+
+        
+        document.getElementById("status").innerText = data.status || "processing";
+        document.getElementById("inserted").innerText = data.inserted || 0;
+        document.getElementById("updated").innerText = data.updated || 0;
+
+        let progress = data.progress || 0;
+
+        document.getElementById("progressBar").style.width = progress + "%";
+        document.getElementById("progressText").innerText = progress + "%";
+
+        
+        if (data.status !== "completed") {
+            setTimeout(checkStatus, 200);  // ⚡ faster (0.2 sec)
+        } else {
+
+            
+            document.getElementById("progressBar").style.width = "100%";
+            document.getElementById("progressText").innerText = "100%";
+
+            
+            window.location.href = "/data/";
+        }
+
+    })
+    .catch(err => {
+        console.error("Error:", err);
+
+        
+        setTimeout(checkStatus, 1000);
+    });
+}
+</script>
+</body>
+</html>
