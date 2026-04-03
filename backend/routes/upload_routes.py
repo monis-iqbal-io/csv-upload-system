@@ -27,6 +27,10 @@ def upload_csv():
     timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
 
     file_name = f"{timestamp}_{unique_id}_{original_filename}"
+
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER),
+    
     filepath = os.path.join(UPLOAD_FOLDER , file_name)
 
 
