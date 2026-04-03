@@ -13,3 +13,5 @@ __pycache__/
 logs/
 
 backend/uploads/
+
+frontend/staticfiles/
