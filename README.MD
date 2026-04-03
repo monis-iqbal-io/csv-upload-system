@@ -15,7 +15,6 @@ The system provides real-time processing progress, upload history tracking, sear
 - Real-time processing progress tracking
 - View uploaded user data
 - Upload history tracking
-- Search functionality
 - Date range filtering
 - Pagination support
 
@@ -38,7 +37,7 @@ The system provides real-time processing progress, upload history tracking, sear
 
 
 ---
-
+```
 ## Project Structure
 
 csv-upload-system/
@@ -118,6 +117,7 @@ csv-upload-system/
 ├── .gitignore
 └── README.md
 
+```
 ---
 
 ## 🌐 Live Links
