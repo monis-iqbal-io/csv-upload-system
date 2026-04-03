@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 from services.process_service import progress_store
+import os
 
+BASE_DIR = os.getcwd()
+UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 status_bp = Blueprint('status_bp', __name__)
 
 @status_bp.route('/upload-status', methods=['GET'])

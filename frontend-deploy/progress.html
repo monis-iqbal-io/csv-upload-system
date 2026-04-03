@@ -60,7 +60,7 @@ checkStatus();
 
 function checkStatus() {
 
-    fetch(`http://127.0.0.1:5000/upload-status?file_name=${file_name}`)
+    fetch(`${BASE_URL}/upload-status?file_name=${file_name}`)
     .then(res => res.json())
     .then(data => {
 

@@ -7,9 +7,9 @@ from utils.db import get_connection
 progress_store = {}
 
 
-def process_csv(file_name, mapping):
+def process_csv(file_path, mapping):
 
-    filepath = os.path.join('uploads', file_name)
+    file_name = os.path.basename(file_path)
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -19,7 +19,7 @@ def process_csv(file_name, mapping):
 
     try:
         #LOAD CSV
-        with open(filepath, 'r', encoding='utf-8') as csvfile:
+        with open(file_path, 'r', encoding='utf-8') as csvfile:
             rows = list(csv.DictReader(csvfile))
 
         total_rows = len(rows)

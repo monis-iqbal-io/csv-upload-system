@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+import os , json
 
 mapping = Blueprint('mapping', __name__)
 
@@ -47,7 +48,14 @@ def map_headers():
     if len(values) != len(set(values)):
         return jsonify({'error': 'Duplicate mapping not allowed'}), 400
 
-    file_mappings[file_name] = header_mapping
+    BASE_DIR = os.getcwd()
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+    mapping_path = os.path.join(UPLOAD_FOLDER, f"{file_name}_mapping.json")
+
+    with open(mapping_path, 'w') as f:
+        json.dump(header_mapping, f)
 
     return jsonify({
         'message': 'Mapping saved successfully',
