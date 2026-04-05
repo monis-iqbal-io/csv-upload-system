@@ -3,7 +3,7 @@
 ##  Overview
 The CSV Upload Panel System is a full-stack web application that allows users to upload CSV files, map headers dynamically, and insert or update records into a database using the mobile number as a unique identifier.
 
-The system provides real-time processing progress, upload history tracking, search functionality, and date-based filtering.
+The system provides real-time processing progress, upload history tracking, and date-based filtering.
 
 ---
 
