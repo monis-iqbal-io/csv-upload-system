@@ -58,6 +58,8 @@ const pageNumbers = document.getElementById("pageNumbers");
 
 // convert date to IST format
 function formatToIST(utcDate) {
+
+    const isoDate = utcDate.replace(" ", "T") + "Z";
     const date = new Date(utcDate);
 
     return date.toLocaleString("en-IN", {
