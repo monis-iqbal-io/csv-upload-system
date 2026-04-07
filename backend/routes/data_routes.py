@@ -1,6 +1,7 @@
 from flask import Blueprint, Flask, request, jsonify
 from flask_cors import CORS
 from utils.db import get_connection
+import pytz
 
 app = Flask(__name__)
 CORS(app)
@@ -92,14 +93,21 @@ def upload_history():
         rows = cursor.fetchall()
 
         data = []
+        ist = pytz.timezone('Asia/Kolkata')
+
         for row in rows:
+            upload_date = row[5]
+
+            if upload_date:
+                upload_date = upload_date.replace(tzinfo=pytz.utc).astimezone(ist)
+                upload_date = upload_date.strftime("%Y-%m-%d %H:%M:%S")
             data.append({
                 "file_name": row[0],
                 "total_rows": row[1],
                 "inserted": row[2],
                 "updated": row[3],
                 "status": row[4],
-                "upload_date": row[5].strftime("%Y-%m-%d %H:%M:%S") if row[5] else None
+                "upload_date": upload_date
             })
 
         # COUNT QUERY
