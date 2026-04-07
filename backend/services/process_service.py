@@ -1,9 +1,12 @@
 import csv
 import os
+import time
 from datetime import datetime
 import pytz
 from utils.db import get_connection
 
+
+ist = pytz.timezone('Asia/Kolkata')
 # In-memory progress tracker
 progress_store = {}
 
@@ -34,7 +37,7 @@ def process_csv(file_path, mapping):
             "total": total_rows
         }
 
-        ist = pytz.timezone('Asia/Kolkata')
+        
 
         #INSERT INTO HISTORY TABLE
         cursor.execute("""
