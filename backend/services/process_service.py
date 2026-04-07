@@ -2,11 +2,10 @@ import csv
 import os
 import time
 from datetime import datetime
-import pytz
+
 from utils.db import get_connection
 
 
-ist = pytz.timezone('Asia/Kolkata')
 # In-memory progress tracker
 progress_store = {}
 
@@ -44,7 +43,7 @@ def process_csv(file_path, mapping):
         INSERT INTO upload_files
             (file_name, total_rows, inserted_rows, updated_rows, status, upload_date)
             VALUES (%s, %s, %s, %s, %s, %s)
-             """, (file_name, total_rows, 0, 0, 'processing', datetime.now(ist)))
+             """, (file_name, total_rows, 0, 0, 'processing', datetime.now()))
 
         upload_id = cursor.fetchone()[0]
         conn.commit()
@@ -67,7 +66,7 @@ def process_csv(file_path, mapping):
             mobile = str(mobile).strip()    
 
             #Mobile should be digits and at least 10 characters long
-            if not mobile.isdigit() or len(mobile) < 10:
+            if not mobile.isdigit() or len(mobile) != 10:
                 continue
 
             #CHECK EXISTING
