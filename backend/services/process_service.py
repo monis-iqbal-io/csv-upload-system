@@ -38,11 +38,10 @@ def process_csv(file_path, mapping):
 
         #INSERT INTO HISTORY TABLE
         cursor.execute("""
-            INSERT INTO upload_files
+        INSERT INTO upload_files
             (file_name, total_rows, inserted_rows, updated_rows, status, upload_date)
             VALUES (%s, %s, %s, %s, %s, %s)
-            RETURNING id
-        """, (file_name, total_rows, 0, 0, 'processing', datetime.now(ist)))
+             """, (file_name, total_rows, 0, 0, 'processing', datetime.now(ist)))
 
         upload_id = cursor.fetchone()[0]
         conn.commit()
